@@ -34,7 +34,7 @@ class HukumanController extends Controller
         $pelanggaran = BuktiPelanggaran::whereHas('hukuman.peserta', function ($query) use ($adminId) {
             $query->where('admin_id', $adminId);
         })->with('hukuman.peserta')->get();
-        
+        // test
         return view('admin.hukuman.bukti', compact('pelanggaran', 'peserta'));
     }
     //storegae
