@@ -1,5 +1,5 @@
 ---
 deployment:
  tasks:
- - export DEPLOYPATH=/home/sakibrao/repositories/sakibra/sakibra.online
+ - export DEPLOYPATH=/home/sakibrao/sakibra.online
  - /usr/bin/rsync -Paz * $DEPLOYPATH --delete
