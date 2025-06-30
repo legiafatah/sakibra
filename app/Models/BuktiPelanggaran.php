@@ -19,4 +19,5 @@ class BuktiPelanggaran extends Model
     {
         return $this->hasMany(Hukuman::class, 'bukti_pelanggaran_id');
     }
+    
 }
