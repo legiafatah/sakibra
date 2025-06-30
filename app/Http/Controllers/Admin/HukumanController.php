@@ -31,9 +31,7 @@ class HukumanController extends Controller
     {
         $adminId = auth('admin')->user()->id;
         $peserta = Peserta::where('admin_id', $adminId)->get();
-        $pelanggaran = BuktiPelanggaran::whereHas('hukuman', function ($query) use ($adminId) {
-            $query->where('admin_id', $adminId);
-        })->with('hukuman')->get();
+        $pelanggaran = BuktiPelanggaran::all();
         // test
         return view('admin.hukuman.bukti', compact('pelanggaran', 'peserta'));
     }
