@@ -102,6 +102,8 @@ class AddJuriController extends Controller
             'jk' => 'required|in:L,P',
             'username' => 'required|string|max:255|unique:juri,username',
             'password' => 'required|string|min:6',
+        ], [
+            'username.unique' => 'Username sudah digunakan.',
         ]);
        
         

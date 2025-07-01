@@ -12,6 +12,8 @@ use App\Models\DetailKategori;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Validation\Rule;
+
 use Maatwebsite\Excel\Excel as BaseExcel;
 
 class PenilaianController extends Controller
@@ -82,9 +84,16 @@ class PenilaianController extends Controller
     public function simpanKategori(Request $request)
     {
         $request->validate([
-            
-            'nama' => 'required|string|max:255',
+            'nama' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('kategori')->where(fn ($q) => $q->where('admin_id', auth('admin')->user()->id)),
+            ],
+        ], [
+            'nama.unique' => 'Nama kategori sudah digunakan.',
         ]);
+
 
         Kategori::create([
             

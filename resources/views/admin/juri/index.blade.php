@@ -29,9 +29,12 @@
                                 <option value="P">Perempuan</option>
                             </select>
                         </div>
-                        <div class="mb-3">
+                       <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" id="username" required>
+                            <input type="text" name="username" class="form-control" id="username" value="{{ old('username') }}" required>
+                            @error('username')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
@@ -285,6 +288,16 @@
 
 
 
+      
+
 
 </script>
+@if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var myModal = new bootstrap.Modal(document.getElementById('modalTambahJuri'));
+            myModal.show();
+        });
+    </script>
+@endif
 @endpush

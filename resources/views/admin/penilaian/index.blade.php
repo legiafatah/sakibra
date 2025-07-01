@@ -14,10 +14,17 @@
                         <span class="modal-title">Tambah Kategori</span>
                     
                     </div>
-                    <div class="modal-body">
+                    {{-- <div class="modal-body">
                         <label for="nama_kategori" class="form-label">Nama Kategori</label>
                         <input type="text" name="nama" id="nama_kategori" class="form-control uppercase" required>
-                    </div>
+                    </div> --}}
+                                           <div class="modal-body">
+                                                <label for="nama" class="form-label">Nama Kategori</label>
+                                                <input type="text" name="nama" class="form-control uppercase" id="nama" value="{{ old('nama') }}" required>
+                                                @error('nama')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Simpan Kategori</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
@@ -186,4 +193,12 @@
 
 
 </script>
+@if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var myModal = new bootstrap.Modal(document.getElementById('modalTambahKategori'));
+            myModal.show();
+        });
+    </script>
+@endif
 @endpush

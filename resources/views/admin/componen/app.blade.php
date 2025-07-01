@@ -20,6 +20,8 @@
     {{-- <link href="{{ asset('assets/css/scrollspyNav.css') }}" rel="stylesheet" type="text/css" /> --}}
     {{-- <link href="{{ asset('assets/css/components/custom-modal.css') }}" rel="stylesheet" type="text/css" /> --}}
     <link href="{{ asset('plugins/table/datatable/dt-global_style.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     {{-- <link href="{{ asset('demo5/assets/css/custom.css') }}" rel="stylesheet" type="text/css" /> --}}
     @stack('css')
 
