@@ -2,48 +2,57 @@
 @extends('juri.componen.app')
 
 @section('content')
-<div class="container my-3">
-    <div class="form-group">
-        <label for="pesertaSelect">Pilih Peserta:</label>
-        <select class="form-control" id="pesertaSelect">
-            <option value="">-- Pilih --</option>
-            @foreach($peserta as $p)
-                <option value="{{ $p->id }}">{{ $p->nama }}</option>
-            @endforeach
-        </select>
-        <button class="btn btn-primary mt-3" onclick="mulaiPenilaian()">Mulai</button>
-    </div>
-
-    <div class="background-wrapper">
-    <img src="/assets/img/image.png" alt="Background">
-    </div>
-
-    <div id="form-penilaian" style="display: none;" class="fade-slide">
-        <div class="penilaian-box">
-            <h5 id="nama-peserta">Nama Peserta</h5>
-            <br>
-            <h6>Kategori {{ $kategori }}</h6>
-            {{-- <h5>Detail Kategori</h5> --}}
-            <h3 id="judul-detail-kategori">Hadap Kanan</h3>
-
-            <div class="d-flex justify-content-center flex-wrap mb-4">
-                <div class="nilai-circle" onclick="beriNilai(10, this)">10</div>
-                <div class="nilai-circle" onclick="beriNilai(15, this)">15</div>
-                <div class="nilai-circle" onclick="beriNilai(20, this)">20</div>
+<div class="row layout-top-spacing" id="cancel-row">
+    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+        <div class="widget-content widget-content-area br-6">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <span>Penilaian Juri</span>
             </div>
+            <div class="container my-3">
+                <div class="form-group">
+                    <label for="pesertaSelect">Pilih Peserta:</label>
+                    <select class="form-control" id="pesertaSelect">
+                        <option value="">-- Pilih --</option>
+                        @foreach($peserta as $p)
+                            <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                        @endforeach
+                    </select>
+                    <button class="btn btn-primary mt-3" onclick="mulaiPenilaian()">Mulai</button>
+                </div>
 
-            <div class="tombol-bawah mt-3">
+                {{-- <div class="background-wrapper">
+                <img src="/assets/img/image.png" alt="Background">
+                </div> --}}
 
-                <button class="btn btn-secondary" onclick="kembaliDetail()">Kembali</button>
-                <button class="btn btn-success" onclick="nextDetail()">Lanjut</button>
-                <button class="btn btn-info" onclick="reviewNilai()">Review</button>
-                <button class="btn btn-dark" onclick="kirimNilai()">Submit</button>
+                <div id="form-penilaian" style="display: none;" class="fade-slide">
+                    
+                        <h5 id="nama-peserta">Nama Peserta</h5>
+                        <br>
+                        <h6 class="text-center font-weight-bold" style="color: black;">Kategori {{ $kategori }}</h6>
+                        <h3 id="judul-detail-kategori" class="text-center font-weight-bold" style="color: black;"></h3>
+
+                        
+                        <div class="d-flex justify-content-center flex-wrap mb-4">
+                            <div class="nilai-circle" onclick="beriNilai(0, this)">0</div>
+                            <div class="nilai-circle" onclick="beriNilai(10, this)">10</div>
+                            <div class="nilai-circle" onclick="beriNilai(15, this)">15</div>
+                            <div class="nilai-circle" onclick="beriNilai(20, this)">20</div>
+                        </div>
+
+                        <div class="tombol-bawah mt-3">
+
+                            <button class="btn btn-secondary" onclick="kembaliDetail()">Kembali</button>
+                            <button class="btn btn-success" onclick="nextDetail()">Lanjut</button>
+                            {{-- <button class="btn btn-info" onclick="reviewNilai()">Review</button> --}}
+                            <button class="btn btn-dark" onclick="kirimNilai()">Submit</button>
+                        </div>
+                    
+                </div>
             </div>
         </div>
     </div>
 </div>
 <style>
-
         .background-wrapper {
         position: fixed;
         top: 0;
@@ -58,93 +67,84 @@
         height: 100%;
         object-fit: cover;
     }
-.penilaian-box {
-    background-color: rgba(178, 193, 188, 0.5);
-    color: white;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    position: relative;
-}
 
-#nama-peserta {
-    font-weight: bold;
-    color: black;
-    text-align: left;
-    margin-bottom: 10px;
-}
+    #nama-peserta {
+        font-weight: bold;
+        color: black;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+    .penilaian-box h4, 
+    .penilaian-box h5 {
+        margin: 10px 0;
+    }
 
-.penilaian-box h4, 
-.penilaian-box h5 {
-    margin: 10px 0;
-}
-
-.nilai-circle {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    margin: 10px;
-    font-size: 22px;
-    font-weight: bold;
-    color: black;
-    background-color: lightgray;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.nilai-circle:hover {
-    transform: scale(1.1);
-}
-
-.nilai-circle.active {
-    background-color: black;
-    color: white;
-}
-
-.tombol-bawah {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.tombol-bawah button {
-    background-color: black !important;
-    color: white !important;
-    border: none;
-    padding: 8px 16px;
-    font-weight: bold;
-    min-width: 90px;
-    transition: background-color 0.2s;
-}
-
-.tombol-bawah button:hover {
-    background-color: #333 !important;
-}
-
-@media (max-width: 576px) {
     .nilai-circle {
-        width: 60px;
-        height: 60px;
-        font-size: 18px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin: 10px;
+        font-size: 22px;
+        font-weight: bold;
+        color: black;
+        background-color: lightgray;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .nilai-circle:hover {
+        transform: scale(1.1);
+    }
+
+    .nilai-circle.active {
+        background-color: black;
+        color: white;
     }
 
     .tombol-bawah {
-        flex-direction: column;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
     }
 
     .tombol-bawah button {
-        width: 100%;
+        background-color: blue !important;
+        color: white !important;
+        border: none;
+        padding: 8px 16px;
+        font-weight: bold;
+        min-width: 90px;
+        transition: background-color 0.2s;
     }
 
-    .penilaian-box {
-        padding: 20px 10px;
+    /* .tombol-bawah button:hover {
+        background-color: #333 !important;
+    } */
+
+    @media (max-width: 576px) {
+        .nilai-circle {
+            width: 60px;
+            height: 60px;
+            font-size: 18px;
+        }
+
+        .tombol-bawah {
+            flex-direction: column;
+        }
+
+        .tombol-bawah button {
+            width: 100%;
+        }
+
+        .penilaian-box {
+            padding: 20px 10px;
+        }
     }
-}
 </style>
 
 
@@ -223,11 +223,27 @@
         }
 
         window.nextDetail = function () {
+            const currentDetail = detailKategori[index];
+
+            // Cek apakah nilai untuk detail saat ini sudah dipilih
+            const existing = nilaiTerkumpul.find(n => n.detail_kategori_id === currentDetail.id);
+            if (!existing) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Silakan berikan nilai terlebih dahulu!',
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+                return;
+            }
+
+            // Kalau nilai sudah ada, baru lanjut ke next
             if (index < detailKategori.length - 1) {
                 index++;
                 tampilkanDetail();
             }
         }
+
     
         window.kembaliDetail = function () {
             if (index > 0) {

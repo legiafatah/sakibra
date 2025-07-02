@@ -9,6 +9,8 @@ use App\Models\AksesJuri;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class AddJuriController extends Controller
 {
@@ -28,22 +30,7 @@ class AddJuriController extends Controller
         ->get();
         return view('admin.juri.index', compact('juri', 'kategori','aksesJuri'));
     }
-    // public function index()
-    // {
-    //     $adminId = auth('admin')->user()->id;
 
-    //     $juri = Juri::where('admin_id', $adminId)->get();
-
-    //     $juriIds = $juri->pluck('id');
-
-    //     $aksesJuri = AksesJuri::with(['juri', 'kategori'])
-    //                     ->whereIn('juri_id', $juriIds)
-    //                     ->get();
-
-    //     $kategori = Kategori::all();
-
-    //     return view('admin.juri.index', compact('juri', 'kategori', 'aksesJuri'));
-    // }
     public function aksesJuri()
     {
         $adminId = auth('admin')->user()->id;
@@ -100,8 +87,15 @@ class AddJuriController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'jk' => 'required|in:L,P',
-            'username' => 'required|string|max:255|unique:juri,username',
-            'password' => 'required|string|min:6',
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('juri')->where(function ($query) {
+                    return $query->where('admin_id', auth('admin')->user()->id);
+                }),
+            ],
+            'password' => 'required|string|min:4',
         ], [
             'username.unique' => 'Username sudah digunakan.',
         ]);
@@ -145,13 +139,30 @@ class AddJuriController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $adminId = auth('admin')->user()->id;
+        $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'jk' => 'required|in:L,P',
-            'username' => 'required|string|max:255|unique:juri,username,' . $id,
-            'password' => 'nullable|string|min:6',
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('juri')->where(function ($query) use ($adminId) {
+                    return $query->where('admin_id', $adminId);
+                })->ignore((int) $id, 'id'),
+            ],
+            'password' => 'nullable|string|min:4',
+        ], [
+            'username.unique' => 'Username sudah digunakan.',
         ]);
     
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('edit_modal_id', $id); // kirim id ke blade
+        }
+
         $juri = Juri::findOrFail($id);
         $juri->nama = $request->nama;
         $juri->jk = $request->jk;

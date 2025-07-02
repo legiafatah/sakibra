@@ -11,6 +11,7 @@ use App\Models\Admin;
 use App\Models\Peserta;
 use App\Models\Juri;
 
+
 class AdminController extends Controller
 {
     public function index()
@@ -123,6 +124,24 @@ class AdminController extends Controller
     public function dashboard()
     {
         return view('admin.dashboard'); // Pastikan file ini ada
+    }
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $admin = Auth::guard('admin')->user(); // Ganti guard jika pakai default
+
+        if (!Hash::check($request->old_password, $admin->password)) {
+            return back()->with('error', 'Password lama tidak cocok.');
+        }
+
+        $admin->password = Hash::make($request->new_password);
+        $admin->save();
+
+        return back()->with('success', 'Password berhasil diubah.');
     }
 
 }

@@ -7,13 +7,17 @@
             <form action="{{ route('peserta.store') }}" method="POST" class="modal-content">
                 @csrf
                 <div class="modal-header bg-info text-white">
-                    <span class="modal-title">Tambah Peserta</span>
+                    <span class="modal-title">Tambah Admin</span>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="nama" class="form-label">Nama</label>
-                        <input type="text" name="nama" id="nama" class="form-control" required>
+                        <label for="nama" class="form-label">Nama Peserta</label>
+                        <input type="text" name="nama" class="form-control" id="nama" value="{{ old('nama') }}" required>
+                            @error('nama')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                     </div>
+
                     <div class="mb-3">
                         <label for="kategori" class="form-label">Kategori</label>
                         <select name="kategori" id="kategori" class="form-control" required>
@@ -25,7 +29,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="no_peserta" class="form-label">No Peserta</label>
-                        <input type="number" name="no_peserta" id="no_peserta" class="form-control" required>
+                        <input type="text" class="form-control" id="no_peserta" value="{{ $formattedNo }}" readonly>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -51,6 +55,9 @@
                     <div class="mb-3">
                         <label for="edit-nama" class="form-label">Nama</label>
                         <input type="text" name="nama" id="edit-nama" class="form-control" required>
+                        @error('nama')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="edit-kategori" class="form-label">Kategori</label>
@@ -98,7 +105,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($peserta as $index => $item)
+                                    @forelse ($pesertas as $index => $item)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $item->nama }}</td>
@@ -202,11 +209,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
-
-  
-    
-
-
 </script>
+@if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (session('edit_modal_id'))
+                // Modal edit yang gagal validasi
+                const modal = new bootstrap.Modal(document.getElementById('modalEditPeserta'));
+                modal.show();
+
+                // Isi kembali data yang diketik sebelumnya
+                document.getElementById('edit-id').value = "{{ session('edit_modal_id') }}";
+                document.getElementById('edit-nama').value = @json(old('nama'));
+                document.getElementById('edit-kategori').value = @json(old('kategori'));
+                document.getElementById('edit-no_peserta').value = @json(old('no_peserta'));
+                
+                // Reset action
+                const form = document.getElementById('form-edit-peserta');
+                form.action = `/admin/peserta/update/{{ session('edit_modal_id') }}`;
+            @else
+                // Kalau error dari tambah peserta
+                const modal = new bootstrap.Modal(document.getElementById('modalTambahPeserta'));
+                modal.show();
+            @endif
+        });
+    </script>
+@endif
+
 @endpush

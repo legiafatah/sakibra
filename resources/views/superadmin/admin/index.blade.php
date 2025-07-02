@@ -1,81 +1,108 @@
 @extends('superadmin.componen.app')
 
 @section('content')
-{{-- <div class="card">
-    <div class="card-header d-flex justify-content-between">
-        <span>Data Admin</span>
-        <a href="{{ route('admin_create') }}" class="btn btn-primary">+ Tambah Admin</a>
-    </div>
-    <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($admin as $admin)
-                    <tr>
-                        <td>{{ $admin->username }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div> --}}
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Data Admin</h5>
-        <a href="{{ route('admin_create') }}" class="btn btn-primary">+ Tambah Admin</a>
+    {{--Modal admin--}}
+    <div class="modal fade" id="modalTambahAdmin" tabindex="-1" aria-labelledby="modalTambahAdminLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('admin_store') }}" method="POST" class="modal-content">
+                
+                @csrf
+                <div class="modal-header bg-info text-white">
+                    <span class="modal-title">Tambah Peserta</span>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Nama</label>
+                        <input type="text" name="nama" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Jenis Kelamin</label>
+                        <select name="jk" class="form-control" required>
+                            <option value="">-- Pilih Jenis Kelamin --</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>No. WA</label>
+                        <input type="text" name="no_wa" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Username</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="card-body table-responsive">
-        <table class="table table-bordered">
-            <thead class="thead-light">
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>JK</th>
-                    <th>No WA</th>
-                    <th>Username</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($admin as $index => $admin)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $admin->nama }}</td>
-                    <td>{{ $admin->jk }}</td>
-                    <td>{{ $admin->no_wa }}</td>
-                    <td>{{ $admin->username }}</td>
-                    <td>
-                    <button class="btn btn-sm toggle-status-btn {{ $admin->status ? 'btn-success' : 'btn-secondary' }}" 
-                            data-id="{{ $admin->id }}" 
-                            data-status="{{ $admin->status }}">
-                        {{ $admin->status ? 'Aktif' : 'Nonaktif' }}
-                    </button>
-                    </td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-warning">
-                            ✏️
-                        </a>
-                        <form id="form-hapus-{{ $admin->id }}" action="{{ route('admin.destroy', $admin->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-sm btn-danger" onclick="konfirmasiHapus({{ $admin->id }})">🗑️</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
 
 
+                    <div class="widget-content widget-content-area br-6">
+                        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                            <span>Manajemen Admin</span>
+                            <button class="btn btn-sm btn-light" data-toggle="modal" data-target="#modalTambahAdmin">+ Tambah Admin</button>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table id="alter_pagination" class="table table-hover" style="width:100%">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama</th>
+                                        <th>JK</th>
+                                        <th>No WA</th>
+                                        <th>Username</th>
+                                        
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($adminList as $index => $admin)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $admin->nama }}</td>
+                                        <td>{{ $admin->jk }}</td>
+                                        <td>{{ $admin->no_wa }}</td>
+                                        <td>{{ $admin->username }}</td>
+                                     
+                                        <td class="text-center">
+                                                <form id="form-hapus-{{ $admin->id }}" action="{{ route('admin.destroy', $admin->id) }}" method="POST" style="display:inline;">
+                                                   
+                                                    {{-- <button type="button"
+                                                    class="btn btn-sm btn-success btn-edit-peserta"
+                                                    data-id="{{ $item->id }}"
+                                                    data-nama="{{ $item->nama }}"
+                                                    data-kategori="{{ $item->kategori }}"
+                                                    data-no_peserta="{{ $item->no_peserta }}">
+                                                    ✏️
+                                                    </button> --}}
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="konfirmasiHapus({{ $admin->id }})">🗑️</button>
+                                             
+                                                </form>
+                                            </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
+   
+
+    
+       
+             
+ 
 
 
 @endsection

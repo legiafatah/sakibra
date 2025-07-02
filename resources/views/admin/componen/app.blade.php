@@ -37,6 +37,37 @@
 </head>
 
 <body class="sidebar-noneoverflow">
+    <div class="modal fade" id="modalEditPassword" tabindex="-1" aria-labelledby="editPasswordLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="formEditPassword" action="{{ route('admin.update_password') }}" method="POST">
+        @csrf
+        <div class="modal-content">
+           <div class="modal-header bg-info text-white">
+                        <span class="modal-title">Ubah Password</span>
+            
+                    </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label>Password Lama</label>
+                    <input type="password" name="old_password" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Password Baru</label>
+                    <input type="password" name="new_password" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Konfirmasi Password Baru</label>
+                    <input type="password" name="new_password_confirmation" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-success">Simpan</button>
+            </div>
+        </div>
+    </form>
+  </div>
+</div>
     @include('admin.componen.navbar')
 
     <div class="main-container" id="container">
@@ -172,6 +203,27 @@
             }).draw();
         });
         </script>
+            @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '{{ session("success") }}',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: '{{ session("error") }}',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    </script>
+    @endif
 </body>
 
 </html>

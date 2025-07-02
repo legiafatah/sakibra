@@ -31,6 +31,8 @@
         @yield('content')
     </main>
 
-    @stack('scripts') {{-- Jika nanti butuh JS tambahan --}}
+    @stack('scripts')
+
+ {{-- Jika nanti butuh JS tambahan --}}
 </body>
 </html>

@@ -1,21 +1,18 @@
 @extends('admin.componen.app')
-
 @section('content')
 
-   
     <!-- Modal Tambah Juri -->
     <div class="modal fade" id="modalTambahJuri" tabindex="-1" aria-labelledby="modalTambahJuriLabel" aria-hidden="true">
         <div class="modal-dialog">
             <form action="{{ route('juri_store') }}" method="POST">
                 @csrf
                 <div class="modal-content">
-                    <!-- Header hijau dan putih seperti contoh -->
+                    
                     <div class="modal-header bg-info text-white">
                         <span class="modal-title" >Tambah Juri</span>
-                        {{-- <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button> --}}
                     </div>
 
-                    <!-- Body putih bersih -->
+                    
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama</label>
@@ -41,8 +38,6 @@
                             <input type="password" name="password" class="form-control" id="password" required>
                         </div>
                     </div>
-
-                    <!-- Footer dengan tombol hijau -->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Simpan</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
@@ -79,9 +74,16 @@
                             </select>
                         </div>
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="edit-username" class="form-label">Username</label>
                             <input type="text" name="username" id="edit-username" class="form-control" required>
+                        </div> --}}
+                          <div class="mb-3">
+                            <label for="edit-username" class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" id="edit-username" value="{{ old('username') }}" required>
+                            @error('username')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
@@ -184,54 +186,6 @@
         });
     }
 
-
-        
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     const inputs = document.querySelectorAll('.uppercase');
-    //     inputs.forEach(input => {
-    //         input.addEventListener('input', function () {
-    //             this.value = this.value.toUpperCase();
-    //         });
-    //     });
-
-    //     @if(session('success'))
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Berhasil!',
-    //             text: '{{ session('success') }}'
-    //         });
-    //     @endif
-
-    //     @if(session('error'))
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'Gagal!',
-    //         text: '{{ session('error') }}'
-    //     });
-    //     @endif
- 
-    //     // Trigger tombol edit
-    
-    //     document.querySelectorAll('.btn-edit-kategori').forEach(function (btn) {
-    //         btn.addEventListener('click', function () {
-    //             const id = this.dataset.id;
-    //             const nama = this.dataset.nama;
-
-    //             document.getElementById('edit-nama-kategori').value = nama;
-
-    //             // Set form action
-    //             const form = document.getElementById('form-edit-kategori');
-    //             form.action = '/admin/kategori/edit/' + id; // ganti sesuai route kamu kalau beda
-
-    //             // Tampilkan modal
-    //             // const modal = new bootstrap.Modal(document.getElementById('modalEditKategori'));
-    //             // modal.show();
-    //             $('#modalEditKategori').modal('show');
-    //         });
-    //     });
-    // });
-
-
     document.addEventListener('DOMContentLoaded', function () {
         const inputs = document.querySelectorAll('.uppercase');
         inputs.forEach(input => {
@@ -292,12 +246,28 @@
 
 
 </script>
-@if ($errors->any())
+@if(session('edit_modal_id'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var myModal = new bootstrap.Modal(document.getElementById('modalTambahJuri'));
-            myModal.show();
+            const id = @json(session('edit_modal_id'));
+            const row = document.querySelector(`button[data-id='${id}']`);
+            if (row) {
+                const nama = row.getAttribute('data-nama');
+                const jk = row.getAttribute('data-jk');
+                const username = row.getAttribute('data-username');
+
+                document.getElementById('edit-id').value = id;
+                document.getElementById('edit-nama').value = nama;
+                document.getElementById('edit-jk').value = jk;
+                document.getElementById('edit-username').value = username;
+                document.getElementById('edit-password').value = '';
+
+                document.getElementById('form-edit-juri').action = '/admin/juri/edit/' + id;
+
+                $('#modalEditJuri').modal('show');
+            }
         });
     </script>
 @endif
+
 @endpush

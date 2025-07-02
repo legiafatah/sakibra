@@ -51,6 +51,7 @@ Route::middleware('AdminAuth')->prefix('admin')->group(function () {
     //baru
     Route::post('/penilaian/detailkategori/import', [PenilaianController::class, 'import'])->name('penilaian.detailkategori.import');
     Route::get('/penilaian/detailkategori/template', [PenilaianController::class, 'downloadTemplate'])->name('penilaian.detailkategori.template');
+    Route::post('/admin/update-password', [AdminController::class, 'updatePassword'])->name('admin.update_password');
 
 
     Route::post('/hukuman/from-bukti', [HukumanController::class, 'storeFromBukti'])->name('hukuman_from_bukti');

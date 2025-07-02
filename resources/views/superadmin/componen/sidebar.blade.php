@@ -5,7 +5,7 @@
         <ul class="navbar-nav theme-brand flex-row  text-center">
 
             <li class="nav-item theme-text">
-                <a href="index.html" class="nav-link"> SAKIBRA</a>
+                <a href="dashboard" class="nav-link"> SAKIBRA</a>
             </li>
             <li class="nav-item toggle-sidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -73,7 +73,7 @@
             </li> --}}
 
             <li class="menu active">
-                <a href="{{route ('admin_index') }}" aria-expanded="true" class="dropdown-toggle nav-link"
+                <a href="{{route ('superadmin_dashboard') }}" aria-expanded="true" class="dropdown-toggle nav-link"
                 style="text-decoration: none">
                 <div class="flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"

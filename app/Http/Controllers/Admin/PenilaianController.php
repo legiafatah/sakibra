@@ -13,6 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 use Maatwebsite\Excel\Excel as BaseExcel;
 
@@ -185,9 +186,28 @@ class PenilaianController extends Controller
 
     public function updateKategori(Request $request, $id)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
+        $adminId = auth('admin')->user()->id;
+
+        $validator = Validator::make($request->all(), [
+            // 'nama' => 'required|string|max:255',
+            'nama' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('kategori')->where(function ($query) use ($adminId) {
+                return $query->where('admin_id', $adminId);
+            })->ignore($id),
+            ],
+        ], [
+            'nama.unique' => 'Nama kategori sudah digunakan.',
         ]);
+
+         if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput()
+                    ->with('edit_kategori_id', $id); // untuk trigger modal edit
+            }
 
         $kategori = Kategori::findOrFail($id);
         $kategori->nama = $request->nama;

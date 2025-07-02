@@ -45,8 +45,8 @@ class SuperadminController extends Controller
 
     public function dashboard()
     {
-        // dd(!Auth::guard('superadmin')->check());
-        return view('superadmin.dashboard'); // Pastikan file ini ada
+        $adminList = Admin::all(); // Ambil semua admin
+        return view('superadmin.admin.index', compact('adminList'));
     }
 
 

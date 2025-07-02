@@ -14,17 +14,13 @@
                         <span class="modal-title">Tambah Kategori</span>
                     
                     </div>
-                    {{-- <div class="modal-body">
-                        <label for="nama_kategori" class="form-label">Nama Kategori</label>
-                        <input type="text" name="nama" id="nama_kategori" class="form-control uppercase" required>
-                    </div> --}}
-                                           <div class="modal-body">
-                                                <label for="nama" class="form-label">Nama Kategori</label>
-                                                <input type="text" name="nama" class="form-control uppercase" id="nama" value="{{ old('nama') }}" required>
-                                                @error('nama')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
+                    <div class="modal-body">
+                        <label for="nama" class="form-label">Nama Kategori</label>
+                        <input type="text" name="nama" class="form-control uppercase" id="nama" value="{{ old('nama') }}" required>
+                            @error('nama')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                    </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Simpan Kategori</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
@@ -49,8 +45,11 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                <label for="edit-nama-kategori" class="form-label">Nama Kategori</label>
-                <input type="text" class="form-control uppercase" id="edit-nama-kategori" name="nama" required>
+                    <label for="edit-nama-kategori" class="form-label">Nama Kategori</label>
+                    <input type="text" class="form-control uppercase" id="edit-nama-kategori" name="nama" required value="{{ old('nama') }}">
+                    @error('nama')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             <div class="modal-footer">
@@ -193,12 +192,26 @@
 
 
 </script>
-@if ($errors->any())
+@if (session('edit_kategori_id'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var myModal = new bootstrap.Modal(document.getElementById('modalTambahKategori'));
-            myModal.show();
+            const id = @json(session('edit_kategori_id'));
+            const btn = document.querySelector(`.btn-edit-kategori[data-id="${id}"]`);
+            if (btn) {
+                const nama = btn.getAttribute('data-nama');
+
+                // Isi nilai input modal
+                document.getElementById('edit-nama-kategori').value = nama;
+
+                // Atur action form edit
+                const form = document.getElementById('form-edit-kategori');
+                form.action = '/admin/kategori/edit/' + id;
+
+                // Tampilkan modal edit
+                $('#modalEditKategori').modal('show');
+            }
         });
     </script>
 @endif
+
 @endpush
