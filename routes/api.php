@@ -31,34 +31,32 @@ use App\Models\BuktiPelanggaran;
 // });
 
 Route::post('/pelanggaran', function (Request $request) {
-    Log::info('Menerima request pelanggaran', ['data' => $request->all()]);
+    Log::info('Menerima request base64', ['data' => $request->all()]);
 
-    $validator = Validator::make($request->all(), [
+    $request->validate([
         'waktu' => 'required|date',
-        'gambar' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        'gambar_base64' => 'required|string',
+        'filename' => 'required|string'
     ]);
 
-    if ($validator->fails()) {
-        Log::warning('Validasi gagal', ['errors' => $validator->errors()]);
-        return response()->json(['errors' => $validator->errors()], 422);
-    }
-
     try {
-        // Simpan file ke storage
-        $path = $request->file('gambar')->store('public/bukti');
-        $filename = basename($path);
-        Log::info('Gambar berhasil disimpan', ['path' => $path]);
+        $filename = time() . '_' . $request->filename;
 
-        // Simpan ke database
-        $bukti = BuktiPelanggaran::create([
+        $path = storage_path("app/public/bukti/{$filename}");
+        $decoded = base64_decode($request->gambar_base64);
+
+        file_put_contents($path, $decoded);
+
+        BuktiPelanggaran::create([
             'image' => $filename,
             'waktu' => $request->waktu
         ]);
-        Log::info('Data bukti pelanggaran berhasil disimpan', ['bukti' => $bukti]);
 
-        return response()->json(['message' => 'Data berhasil disimpan']);
+        Log::info("✅ Gambar disimpan sebagai {$filename}");
+
+        return response()->json(['message' => 'Data berhasil disimpan'], 200);
     } catch (\Exception $e) {
-        Log::error('Terjadi kesalahan saat menyimpan data', ['exception' => $e->getMessage()]);
-        return response()->json(['message' => 'Terjadi kesalahan server'], 500);
+        Log::error("❌ Gagal menyimpan base64", ['error' => $e->getMessage()]);
+        return response()->json(['message' => 'Gagal menyimpan gambar'], 500);
     }
 });
