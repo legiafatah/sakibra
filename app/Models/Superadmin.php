@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Superadmin extends Authenticatable
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $table = 'superadmin';
 

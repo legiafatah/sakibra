@@ -52,6 +52,7 @@ Route::middleware('AdminAuth')->prefix('admin')->group(function () {
     Route::post('/penilaian/detailkategori/import', [PenilaianController::class, 'import'])->name('penilaian.detailkategori.import');
     Route::get('/penilaian/detailkategori/template', [PenilaianController::class, 'downloadTemplate'])->name('penilaian.detailkategori.template');
     Route::post('/admin/update-password', [AdminController::class, 'updatePassword'])->name('admin.update_password');
+    Route::delete('/admin/detail-kategori/hapus-per-kategori', [PenilaianController::class, 'hapusPerKategori'])->name('detail.kategori.hapusPerKategori');
 
 
     Route::post('/hukuman/from-bukti', [HukumanController::class, 'storeFromBukti'])->name('hukuman_from_bukti');
@@ -124,6 +125,7 @@ Route::middleware('SuperadminAuth')->prefix('superadmin')->group(function () {
     Route::get('/dashboard', [SuperadminController::class, 'dashboard'])->name('superadmin_dashboard');
     Route::get('/admin/index', [AddAdminController::class, 'indexAdmin'])->name('admin_index');
     Route::get('/admin/create', [AddAdminController::class, 'createAdmin'])->name('admin_create');
+    Route::post('/superadmin/update-password', [SuperadminController::class, 'updatePassword'])->name('superadmin.update_password');
     Route::post('/admin/store', [AddAdminController::class, 'storeAdmin'])->name('admin_store');
     Route::patch('/admin/{id}/toggle-status', [AddAdminController::class, 'toggleStatus'])->name('admin.toggleStatus');
     Route::patch('/superadmin/admin/{id}/toggle-status', [AdminController::class, 'toggleStatus'])->name('admin.toggleStatus');

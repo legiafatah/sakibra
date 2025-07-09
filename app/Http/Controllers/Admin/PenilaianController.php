@@ -168,6 +168,20 @@ class PenilaianController extends Controller
         return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
     }
 
+    public function hapusPerKategori(Request $request)
+    {
+        $request->validate([
+            'kategori_id' => 'required|exists:kategori,id'
+        ]);
+
+        $kategoriId = $request->kategori_id;
+
+        $deleted = DetailKategori::where('kategori_id', $kategoriId)->delete();
+
+        return redirect()->back()->with('success', 'Semua detail kategori dalam kategori terpilih berhasil dihapus.');
+    }
+
+
 
     public function destroyKategori($id)
     {

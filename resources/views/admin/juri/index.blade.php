@@ -236,17 +236,16 @@
             // const modal = new bootstrap.Modal(document.getElementById('modalEditJuri'));
             // modal.show();
             $('#modalEditJuri').modal('show');
+            });
         });
     });
-});
 
 
 
-      
 
 
 </script>
-@if(session('edit_modal_id'))
+{{-- @if(session('edit_modal_id'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const id = @json(session('edit_modal_id'));
@@ -268,6 +267,33 @@
             }
         });
     </script>
+@endif --}}
+
+@if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (session('edit_modal_id'))
+                // Jika error berasal dari modal edit
+                const modal = new bootstrap.Modal(document.getElementById('modalEditJuri'));
+                modal.show();
+
+                // Isi ulang input dengan old data
+                document.getElementById('edit-id').value = "{{ session('edit_modal_id') }}";
+                document.getElementById('edit-nama').value = @json(old('nama'));
+                document.getElementById('edit-jk').value = @json(old('jk'));
+                document.getElementById('edit-username').value = @json(old('username'));
+                document.getElementById('edit-password').value = '';
+
+                // Set ulang action form
+                document.getElementById('form-edit-juri').action = '/admin/juri/edit/{{ session('edit_modal_id') }}';
+            @else
+                // Jika error berasal dari modal tambah
+                const modal = new bootstrap.Modal(document.getElementById('modalTambahJuri'));
+                modal.show();
+            @endif
+        });
+    </script>
 @endif
+
 
 @endpush

@@ -49,6 +49,24 @@ class SuperadminController extends Controller
         return view('superadmin.admin.index', compact('adminList'));
     }
 
+        public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $superadmin = Auth::guard('superadmin')->user(); // Ganti guard jika pakai default
+
+        if (!Hash::check($request->old_password, $superadmin->password)) {
+            return back()->with('error', 'Password lama tidak cocok.');
+        }
+
+        $superadmin->password = Hash::make($request->new_password);
+        $superadmin->save();
+
+        return back()->with('success', 'Password berhasil diubah.');
+    }
 
 
 

@@ -192,7 +192,7 @@
 
 
 </script>
-@if (session('edit_kategori_id'))
+{{-- @if (session('edit_kategori_id'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const id = @json(session('edit_kategori_id'));
@@ -212,6 +212,38 @@
             }
         });
     </script>
+@endif --}}
+
+@if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if (session('edit_kategori_id'))
+                // Jika error berasal dari modal edit
+                const id = @json(session('edit_kategori_id'));
+                const btn = document.querySelector(`.btn-edit-kategori[data-id="${id}"]`);
+                if (btn) {
+                    const nama = btn.getAttribute('data-nama');
+
+                    // Isi nilai input modal
+                    document.getElementById('edit-nama-kategori').value = @json(old('nama'));
+
+
+                    // Atur action form edit
+                    const form = document.getElementById('form-edit-kategori');
+                    form.action = '/admin/kategori/edit/' + id;
+
+                    // Tampilkan modal edit
+                    const modal = new bootstrap.Modal(document.getElementById('modalEditKategori'));
+                    modal.show();
+                }
+            @else
+                // Jika error berasal dari modal tambah
+                const modal = new bootstrap.Modal(document.getElementById('modalTambahKategori'));
+                modal.show();
+            @endif
+        });
+    </script>
 @endif
+
 
 @endpush

@@ -70,6 +70,36 @@
         </div>
     </div>
 
+    <!-- Modal Hapus Detail per Kategori -->
+    <div class="modal fade" id="modalHapusKategori" tabindex="-1">
+        <div class="modal-dialog">
+            <form action="{{ route('detail.kategori.hapusPerKategori') }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <span class="modal-title">Hapus Semua Detail pada Kategori</span>
+                    </div>
+                    <div class="modal-body">
+                        <label for="kategori_id_hapus">Pilih Kategori</label>
+                        <select name="kategori_id" id="kategori_id_hapus" class="form-control" required>
+                            <option value="" disabled selected>-- Pilih Kategori --</option>
+                            @foreach ($kategori as $kat)
+                                <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
+                            @endforeach
+                        </select>
+                        <p class="mt-2 text-danger"><small>Semua detail kategori di kategori ini akan dihapus permanen.</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                        <button type="button" class="btn btn-info" data-dismiss="modal">Batal</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 
 
 
@@ -84,7 +114,13 @@
                     <button class="btn btn-sm btn-light" data-toggle="modal" data-target="#modalTambahDetail">+ Tambah Detail </button>
                     </div>
                 </div>
+                
                 <div class="table-responsive mb-4 mt-4">
+                    <div>   
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalHapusKategori">
+                                        🗑️ Hapus Detail Kategori
+                    </button>
+                    </div>
                     <table id="alter_pagination2" class="table table-hover" style="width:100%">
                         <thead>
                             <tr>
@@ -111,7 +147,8 @@
                                      
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" class="btn btn-sm btn-danger" onclick="konfirmasiHapus({{ $detail->id }})">🗑️</button>
+                                  
+
                                     </form>
                                 </td>
                             </tr>
