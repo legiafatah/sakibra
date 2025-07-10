@@ -42,7 +42,7 @@ Route::post('/pelanggaran', function (Request $request) {
     try {
         $filename = time() . '_' . $request->filename;
 
-        $path = storage_path("app/public/bukti/{$filename}");
+        $path = storage_path("app/public/bukti_pelanggaran/{$filename}");
         $decoded = base64_decode($request->gambar_base64);
 
         file_put_contents($path, $decoded);
