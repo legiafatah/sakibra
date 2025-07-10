@@ -43,11 +43,15 @@ Route::post('/pelanggaran', function (Request $request) {
         $filename = time() . '_' . $request->filename;
 
         $publicHtmlPath = '/home/sakibrao/public_html/bukti';
+        $fullFilePath = $publicHtmlPath . '/' . $filename;
 
+        // Buat folder jika belum ada
+        if (!file_exists($publicHtmlPath)) {
+            mkdir($publicHtmlPath, 0755, true);
+        }
 
         $decoded = base64_decode($request->gambar_base64);
-
-        file_put_contents($publicHtmlPath, $decoded);
+        file_put_contents($fullFilePath, $decoded);
 
         BuktiPelanggaran::create([
             'image' => $filename,
