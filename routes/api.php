@@ -42,15 +42,10 @@ Route::post('/pelanggaran', function (Request $request) {
     try {
         $filename = time() . '_' . $request->filename;
 
-         $publicPath = public_path("bukti/{$filename}");
-
-        // Buat folder jika belum ada
-        if (!file_exists(public_path('bukti'))) {
-            mkdir(public_path('bukti'), 0755, true);
-        }
+        $path = storage_path("app/public/bukti/{$filename}");
         $decoded = base64_decode($request->gambar_base64);
 
-        file_put_contents($publicPath, $decoded);
+        file_put_contents($path, $decoded);
 
         BuktiPelanggaran::create([
             'image' => $filename,

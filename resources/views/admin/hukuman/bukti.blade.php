@@ -35,10 +35,10 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>
                                 @if($bukti->image)
-                                    <img src="{{ asset('bukti_pelanggaran/' . $bukti->image) }}"
+                                    <img src="{{ asset('storage/bukti_pelanggaran/' . $bukti->image) }}"
                                          width="80"
                                          style="cursor:pointer"
-                                         onclick="showImagePreview('{{ asset('bukti_pelanggaran/' . $bukti->image) }}')">
+                                         onclick="showImagePreview('{{ asset('storage/bukti_pelanggaran/' . $bukti->image) }}')">
                                 @else
                                     Tidak ada pelanggaran
                                 @endif
