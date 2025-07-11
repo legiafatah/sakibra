@@ -279,6 +279,8 @@ class HukumanController extends Controller
     // }
 
 
+
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -291,10 +293,13 @@ class HukumanController extends Controller
         $hukuman->nama = $request->nama;
         $hukuman->nilai = $request->nilai;
 
+        // Path absolut ke folder bukti di public_html
+        $destinationPath = '/home/sakibrao/public_html/bukti';
+        $relativePath = 'bukti'; // untuk disimpan di database
+
         if ($request->hasFile('bukti')) {
             $file = $request->file('bukti');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $destinationPath = public_path('bukti');
 
             // Buat folder jika belum ada
             if (!File::exists($destinationPath)) {
@@ -302,19 +307,22 @@ class HukumanController extends Controller
             }
 
             // Hapus file lama jika ada
-            if ($hukuman->bukti && file_exists(public_path($hukuman->bukti))) {
-                unlink(public_path($hukuman->bukti));
+            $oldFilePath = '/home/sakibrao/public_html/' . $hukuman->bukti;
+            if ($hukuman->bukti && file_exists($oldFilePath)) {
+                unlink($oldFilePath);
             }
 
-            // Simpan file ke folder public/bukti
+            // Simpan file baru ke folder bukti
             $file->move($destinationPath, $fileName);
 
-            $hukuman->bukti = 'bukti/' . $fileName;
-        }
+            // Simpan path relatif ke database
+            $hukuman->bukti = $relativePath . '/' . $fileName;
+    }
 
         $hukuman->save();
 
         return redirect()->back()->with('success', 'Hukuman berhasil diperbarui.');
     }
+
 
 }
