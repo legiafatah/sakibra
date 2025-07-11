@@ -116,7 +116,7 @@ class HukumanController extends Controller
                         'peserta_id' => $request->peserta_id ?? null,
                         'nama' => $request->nama ?? 'Pelanggaran dari rekaman',
                         'nilai' => $request->nilai ?? 1,
-                        'bukti' => 'bukti/' . $newName,
+                        'bukti' => $newName,
                     ]);
                 }
             }
@@ -137,7 +137,7 @@ class HukumanController extends Controller
             $file = $request->file('bukti');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('bukti'), $filename);
-            $bukti = 'bukti/' . $filename;
+            $bukti = $filename;
         }
 
         Hukuman::create([
