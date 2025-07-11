@@ -197,7 +197,7 @@
                                 <td>
                                     @if($h->bukti)
                                         {{-- <img src="{{ asset('public/' . $h->bukti) }}" width="80"> --}}
-                                        <img src="{{ asset($h->bukti) }}" width="80">
+                                        <img src="{{ asset('bukti/' . $h->bukti) }}" width="80">
                                     @else
                                         Tidak ada bukti
                                     @endif
