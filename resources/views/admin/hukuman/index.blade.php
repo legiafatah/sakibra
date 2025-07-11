@@ -7,7 +7,8 @@
     {{-- Modal Hukuman--}}
     <div class="modal fade" id="addHukumanModal" tabindex="-1" aria-labelledby="addHukumanModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="{{ route('hukuman_store') }}" method="POST">
+            <form action="{{ route('hukuman_store') }}" method="POST" enctype="multipart/form-data">
+
                 @csrf
                 <div class="modal-content">
                     <!-- Header hijau dan putih seperti contoh -->
@@ -78,7 +79,7 @@
 
     <div class="modal fade" id="editHukumanModal" tabindex="-1" aria-labelledby="editHukumanModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form id="form-edit-hukuman" method="POST" >
+            <form id="form-edit-hukuman" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-content">
