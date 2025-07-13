@@ -22,7 +22,7 @@
 
             <div class="table-responsive mb-4 mt-4">
                 <table id="alter_pagination" class="table table-hover" style="width:100%">
-                    <thead>
+                    {{-- <thead>
                         <tr>
                             <th>No</th>
                             <th>Gambar</th>
@@ -54,12 +54,51 @@
                         @empty
                         <tr><td colspan="3" class="text-center">Belum ada bukti pelanggaran garis.</td></tr>
                         @endforelse
-                    </tbody>
+                    </tbody> --}}
+
+                    <thead>
+    <tr>
+        <th>No</th>
+        <th>Gambar</th>
+        <th>Waktu</th> {{-- Tambahan kolom waktu --}}
+        <th>Aksi</th>
+    </tr>
+</thead>
+<tbody>
+    @forelse ($pelanggaran as $bukti)
+    <tr>
+        <td>{{ $loop->iteration }}</td>
+        <td>
+            @if($bukti->image)
+                <img src="{{ asset('bukti/' . $bukti->image) }}"
+                     width="80"
+                     style="cursor:pointer"
+                     onclick="showImagePreview('{{ asset('bukti/' . $bukti->image) }}')">
+            @else
+                Tidak ada pelanggaran
+            @endif
+        </td>
+        <td>{{ \Carbon\Carbon::parse($bukti->waktu)->format('d-m-Y H:i:s') }}</td> {{-- Kolom waktu --}}
+        <td>
+            <form id="form-hapus-{{ $bukti->id }}" action="{{ route('bukti.destroy', $bukti->id) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="button" class="btn btn-sm btn-danger" onclick="konfirmasiHapus({{ $bukti->id }})">🗑️</button>
+            </form>
+        </td>
+    </tr>
+    @empty
+    <tr><td colspan="4" class="text-center">Belum ada bukti pelanggaran garis.</td></tr>
+    @endforelse
+</tbody>
+
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+
 
 <!-- Modal Preview Gambar -->
 <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">

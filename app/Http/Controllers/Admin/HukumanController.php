@@ -150,71 +150,139 @@ class HukumanController extends Controller
     //     return back()->with('success', 'Hukuman berhasil ditambahkan.');
     // }
 
+    // public function store(Request $request)
+    // {
+    //     $relativePath = 'bukti'; // untuk disimpan di DB
+
+    //     // Proses otomatis berdasarkan waktu_awal dan waktu_akhir
+    //     if ($request->filled('waktu_awal') && $request->filled('waktu_akhir')) {
+    //         $request->validate([
+    //             'waktu_awal' => 'required|date',
+    //             'waktu_akhir' => 'required|date|after_or_equal:waktu_awal',
+    //         ]);
+
+    //         $start = Carbon::parse($request->waktu_awal);
+    //         $end = Carbon::parse($request->waktu_akhir);
+
+    //         $buktiList = BuktiPelanggaran::whereBetween('waktu', [$start, $end])->get();
+
+    //         foreach ($buktiList as $bukti) {
+    //             // File sudah ada di folder bukti, tidak perlu dipindahkan
+    //             // Pastikan hanya ambil nama file-nya
+    //             $filename = $bukti->image;
+
+    //             // Simpan path relatif ke database
+    //             Hukuman::create([
+    //                 'peserta_id' => $request->peserta_id ?? null,
+    //                 'nama' => $request->nama ?? 'Pelanggaran dari rekaman',
+    //                 'nilai' => $request->nilai ?? 1,
+    //                 'bukti' => $relativePath . '/' . $filename,
+    //             ]);
+    //         }
+
+    //         return back()->with('success', 'Data dari bukti pelanggaran berhasil dimasukkan.');
+    //     }
+
+    //     // Proses input manual
+    //     $request->validate([
+    //         'peserta_id' => 'required',
+    //         'nama' => 'required',
+    //         'nilai' => 'required|numeric',
+    //         'bukti' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    //     ]);
+
+    //     $bukti = null;
+    //     if ($request->hasFile('bukti')) {
+    //         $file = $request->file('bukti');
+    //         $filename = time() . '_' . $file->getClientOriginalName();
+
+    //         // Pindah file upload ke folder bukti
+    //         $uploadPath = '/home/sakibrao/public_html/bukti';
+    //         if (!File::exists($uploadPath)) {
+    //             File::makeDirectory($uploadPath, 0755, true);
+    //         }
+
+    //         $file->move($uploadPath, $filename);
+    //         $bukti = $relativePath . '/' . $filename;
+    //     }
+
+    //     Hukuman::create([
+    //         'peserta_id' => $request->peserta_id,
+    //         'nama' => $request->nama,
+    //         'nilai' => $request->nilai,
+    //         'bukti' => $bukti,
+    //     ]);
+
+    //     return back()->with('success', 'Hukuman berhasil ditambahkan.');
+    // }
+
     public function store(Request $request)
-    {
-        $relativePath = 'bukti'; // untuk disimpan di DB
+{
+    $relativePath = 'bukti'; // path gambar yang akan disimpan di DB
 
-        // Proses otomatis berdasarkan waktu_awal dan waktu_akhir
-        if ($request->filled('waktu_awal') && $request->filled('waktu_akhir')) {
-            $request->validate([
-                'waktu_awal' => 'required|date',
-                'waktu_akhir' => 'required|date|after_or_equal:waktu_awal',
-            ]);
-
-            $start = Carbon::parse($request->waktu_awal);
-            $end = Carbon::parse($request->waktu_akhir);
-
-            $buktiList = BuktiPelanggaran::whereBetween('waktu', [$start, $end])->get();
-
-            foreach ($buktiList as $bukti) {
-                // File sudah ada di folder bukti, tidak perlu dipindahkan
-                // Pastikan hanya ambil nama file-nya
-                $filename = $bukti->image;
-
-                // Simpan path relatif ke database
-                Hukuman::create([
-                    'peserta_id' => $request->peserta_id ?? null,
-                    'nama' => $request->nama ?? 'Pelanggaran dari rekaman',
-                    'nilai' => $request->nilai ?? 1,
-                    'bukti' => $relativePath . '/' . $filename,
-                ]);
-            }
-
-            return back()->with('success', 'Data dari bukti pelanggaran berhasil dimasukkan.');
-        }
-
-        // Proses input manual
+    // === JIKA MENGISI WAKTU ===
+    if ($request->filled('waktu_awal') && $request->filled('waktu_akhir')) {
         $request->validate([
             'peserta_id' => 'required',
-            'nama' => 'required',
-            'nilai' => 'required|numeric',
-            'bukti' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'waktu_awal' => 'required|date',
+            'waktu_akhir' => 'required|date|after_or_equal:waktu_awal',
+            'nama'       => 'nullable|string',
+            'nilai'      => 'nullable|numeric',
         ]);
 
-        $bukti = null;
-        if ($request->hasFile('bukti')) {
-            $file = $request->file('bukti');
-            $filename = time() . '_' . $file->getClientOriginalName();
+        $start = \Carbon\Carbon::parse($request->waktu_awal);
+        $end = \Carbon\Carbon::parse($request->waktu_akhir);
 
-            // Pindah file upload ke folder bukti
-            $uploadPath = '/home/sakibrao/public_html/bukti';
-            if (!File::exists($uploadPath)) {
-                File::makeDirectory($uploadPath, 0755, true);
-            }
+        $buktiList = \App\Models\BuktiPelanggaran::whereBetween('waktu', [$start, $end])->get();
 
-            $file->move($uploadPath, $filename);
-            $bukti = $relativePath . '/' . $filename;
+        if ($buktiList->isEmpty()) {
+            return back()->with('error', 'Tidak ada bukti pelanggaran pada waktu tersebut.');
         }
 
-        Hukuman::create([
-            'peserta_id' => $request->peserta_id,
-            'nama' => $request->nama,
-            'nilai' => $request->nilai,
-            'bukti' => $bukti,
-        ]);
+        foreach ($buktiList as $bukti) {
+            \App\Models\Hukuman::create([
+                'peserta_id' => $request->peserta_id,
+                'nama'       => $request->nama ?: 'Pelanggaran otomatis',
+                'nilai'      => $request->nilai ?: 1,
+                'bukti'      => $relativePath . '/' . $bukti->image,
+            ]);
+        }
 
-        return back()->with('success', 'Hukuman berhasil ditambahkan.');
+        return back()->with('success', 'Hukuman berhasil dibuat dari data pelanggaran.');
     }
+
+    // === JIKA MENGISI MANUAL (upload file) ===
+    $request->validate([
+        'peserta_id' => 'required',
+        'nama'       => 'required|string',
+        'nilai'      => 'required|numeric',
+        'bukti'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    $bukti = null;
+    if ($request->hasFile('bukti')) {
+        $file = $request->file('bukti');
+        $filename = time() . '_' . $file->getClientOriginalName();
+
+        $uploadPath = public_path($relativePath);
+        if (!File::exists($uploadPath)) {
+            File::makeDirectory($uploadPath, 0755, true);
+        }
+
+        $file->move($uploadPath, $filename);
+        $bukti = $relativePath . '/' . $filename;
+    }
+
+    \App\Models\Hukuman::create([
+        'peserta_id' => $request->peserta_id,
+        'nama'       => $request->nama,
+        'nilai'      => $request->nilai,
+        'bukti'      => $bukti,
+    ]);
+
+    return back()->with('success', 'Hukuman berhasil ditambahkan.');
+}
+
 
 
 
