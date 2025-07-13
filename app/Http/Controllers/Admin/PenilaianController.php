@@ -14,6 +14,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 use Maatwebsite\Excel\Excel as BaseExcel;
 
@@ -176,7 +177,9 @@ class PenilaianController extends Controller
 
         $kategoriId = $request->kategori_id;
 
-        $deleted = DetailKategori::where('kategori_id', $kategoriId)->delete();
+        // $deleted = DetailKategori::where('kategori_id', $kategoriId)->delete();
+        DB::statement("DELETE FROM detail_kategori WHERE kategori_id = {$kategoriId}");
+
 
         return redirect()->back()->with('success', 'Semua detail kategori dalam kategori terpilih berhasil dihapus.');
     }
