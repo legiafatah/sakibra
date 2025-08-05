@@ -25,6 +25,12 @@
 
                         <label for="excel_file" class="form-label mt-3">Unggah File Excel (.xlsx)</label>
                         <input type="file" name="excel_file" id="excel_file" class="form-control" accept=".xlsx" required>
+
+                       @error('excel_file')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+
+
                         <br>
 
                         <a href="{{ route('penilaian.detailkategori.template') }}" class="btn btn-sm btn-outline-secondary">📥 Unduh Template Excel</a>

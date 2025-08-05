@@ -35,8 +35,17 @@
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" id="password" required>
+                            <div class="input-group">
+                                <input type="password" name="password" class="form-control" id="password" required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline" type="button" id="togglePassword">
+                                        <i data-feather="eye" id="iconPassword"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
+
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Simpan</button>
@@ -245,6 +254,25 @@
 
 
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace(); // Penting untuk render ikon
+
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const icon = document.getElementById('iconPassword');
+
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+
+            // Ganti ikon feather
+            icon.setAttribute('data-feather', isPassword ? 'eye-off' : 'eye');
+            feather.replace(); // render ulang icon feather
+        });
+    });
+</script>
+
+
 {{-- @if(session('edit_modal_id'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {

@@ -10,13 +10,10 @@ class SuperadminSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('superadmin')->insert([
-            'nama' => 'Super Admin',
-            'jk' => 'L',
-            'no_wa' => '08123456789',
-            'username' => 'superadmin',
-            'password' => Hash::make('password123'),
-            'status' => 1
+    DB::table('superadmin')
+        ->where('username', 'superadmin') // atau where('id', 1)
+        ->update([
+            'password' => Hash::make('lesti2914') // ← ganti dengan password baru yang kamu mau
         ]);
     }
 }

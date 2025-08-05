@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+
 
 use Maatwebsite\Excel\Excel as BaseExcel;
 
@@ -105,36 +105,78 @@ class PenilaianController extends Controller
 
         return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
     }
+    // public function import(Request $request)
+    // {
+    //     $request->validate([
+    //         'kategori_id' => 'required|exists:kategori,id',
+    //         'excel_file' => 'required|mimes:xlsx',
+    //     ]);
+
+    //     $data = Excel::toArray([], $request->file('excel_file'));
+
+    //     $rows = $data[0]; // ambil sheet pertama
+
+    //     foreach ($rows as $index => $row) {
+    //         if ($index == 0) continue; // skip header
+    //         if (isset($row[0]) && $row[0] !== null) {
+    //             \App\Models\DetailKategori::create([
+    //                 'nama' => $row[0],
+    //                 'kategori_id' => $request->kategori_id
+    //             ]);
+    //         }
+    //     }
+
+    //     return back()->with('success', 'Berhasil mengimpor detail kategori.');
+    // }
+
     public function import(Request $request)
-    {
-        $request->validate([
-            'kategori_id' => 'required|exists:kategori,id',
-            'excel_file' => 'required|mimes:xlsx',
-        ]);
+{
+    $request->validate([
+        'kategori_id' => 'required|exists:kategori,id',
+        'excel_file' => 'required|mimes:xlsx',
+    ]);
 
-        $data = Excel::toArray([], $request->file('excel_file'));
+    $data = Excel::toArray([], $request->file('excel_file'));
+    $rows = $data[0]; // Ambil sheet pertama
 
-        $rows = $data[0]; // ambil sheet pertama
+    $errors = [];
+    $validRows = [];
 
-        foreach ($rows as $index => $row) {
-            if ($index == 0) continue; // skip header
-            if (isset($row[0]) && $row[0] !== null) {
-                \App\Models\DetailKategori::create([
-                    'nama' => $row[0],
-                    'kategori_id' => $request->kategori_id
-                ]);
-            }
+    foreach ($rows as $index => $row) {
+        if ($index === 0) continue; // Skip header
+
+        // Validasi: hanya boleh ada 1 kolom
+        $nonEmptyValues = array_filter($row, fn($val) => $val !== null && $val !== '');
+
+        if (count($nonEmptyValues) !== 1) {
+            $errors[] = "Baris ke-" . ($index + 1) . " tidak sesuai format (harus 1 kolom saja).";
+        } else {
+            $validRows[] = $row;
         }
-
-        return back()->with('success', 'Berhasil mengimpor detail kategori.');
     }
+
+    if (!empty($errors)) {
+        return back()->withErrors(['excel_file' => implode(' ', $errors)]);
+    }
+
+    // Simpan semua valid rows
+    foreach ($validRows as $row) {
+        \App\Models\DetailKategori::create([
+            'nama' => $row[0],
+            'kategori_id' => $request->kategori_id
+        ]);
+    }
+
+    return back()->with('success', 'Berhasil mengimpor detail kategori.');
+}
+
     public function downloadTemplate()
     {
         $data = [
-            ['nama'],
-            ['Contoh Detail 1'],
-            ['Contoh Detail 2'],
-            ['Contoh Detail 3'],
+            ['NAMA DETAIL KATEGORI'],
+            ['(Contoh) Hadap Kanan'],
+            ['(Contoh) Hadap Kiri'],
+            ['(Contoh) Bubar Barisan'],
         ];
 
         $filename = 'template_detail_kategori.xlsx';
@@ -177,8 +219,8 @@ class PenilaianController extends Controller
 
         $kategoriId = $request->kategori_id;
 
-        // $deleted = DetailKategori::where('kategori_id', $kategoriId)->delete();
-        DB::statement("DELETE FROM detail_kategori WHERE kategori_id = {$kategoriId}");
+        $deleted = DetailKategori::where('kategori_id', $kategoriId)->delete();
+        
 
 
         return redirect()->back()->with('success', 'Semua detail kategori dalam kategori terpilih berhasil dihapus.');

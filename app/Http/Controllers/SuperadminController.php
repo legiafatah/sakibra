@@ -16,19 +16,48 @@ class SuperadminController extends Controller
         return view('superadmin.login');
     }
 
-    public function login(Request $request)
+    // public function login(Request $request)
+    // {
+    //     $credentials = $request->validate([
+    //         'username' => 'required',
+    //         'password' => 'required',
+    //     ]);
+    
+    //     if (Auth::guard('superadmin')->attempt($credentials)) {
+    //         $request->session()->regenerate(); // regenerasi session agar lebih aman
+    //         return redirect()->route('superadmin_dashboard');
+    //     }
+    
+    //     return back()->with('error', 'Username atau password salah');
+    // }
+
+
+        public function login(Request $request)
     {
         $credentials = $request->validate([
             'username' => 'required',
             'password' => 'required',
         ]);
-    
+
+        // Cek apakah ada user dengan username tersebut
+        $superadmin = Superadmin::where('username', $credentials['username'])->first();
+
+        if (!$superadmin) {
+            return back()->with('error', 'Username tidak ditemukan');
+        }
+
+        // Cek apakah status = 1
+        if ($superadmin->status == 0) {
+            return back()->with('error', 'Akun Anda tidak aktif');
+        }
+
+        // Lanjutkan proses login jika status aktif
         if (Auth::guard('superadmin')->attempt($credentials)) {
-            $request->session()->regenerate(); // regenerasi session agar lebih aman
+            $request->session()->regenerate();
             return redirect()->route('superadmin_dashboard');
         }
-    
-        return back()->with('error', 'Username atau password salah');
+
+        return back()->with('error', 'Password salah');
     }
 
     public function logout(Request $request)

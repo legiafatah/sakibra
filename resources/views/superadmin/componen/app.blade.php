@@ -121,6 +121,7 @@
     <script src="{{ asset('demo5/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('demo5/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
     {{-- <script src="{{ asset('demo5/plugins/sweetalert2/sweetalert2.min.js') }}"></script> --}}
 
 

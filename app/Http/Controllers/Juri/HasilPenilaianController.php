@@ -8,6 +8,7 @@ use App\Models\Kategori;
 use App\Models\Peserta;
 use App\Models\DetailKategori;
 use App\Models\HasilPenilaian;
+use App\Models\Juri;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
@@ -32,23 +33,52 @@ class HasilPenilaianController extends Controller
         return view('juri.login');
     }
 
+    // public function login(Request $request)
+    // {
+    //     $request->validate([
+    //         'username' => 'required',
+    //         'password' => 'required',
+    //     ]);
+    
+    //     $credentials = $request->only('username', 'password');
+    
+    //     // Coba login pakai guard juri
+    //     if (Auth::guard('juri')->attempt($credentials)) {
+    //         // Login sukses
+    //         return redirect()->route('juri_penilaian');
+    //     }
+    
+    //     // Gagal login
+    //     return back()->with('error', 'Username atau password salah');
+    // }
+
+
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'username' => 'required',
             'password' => 'required',
         ]);
-    
-        $credentials = $request->only('username', 'password');
-    
-        // Coba login pakai guard juri
+
+        // Cek apakah ada user dengan username tersebut
+        $juri = Juri::where('username', $credentials['username'])->first();
+
+        if (!$juri) {
+            return back()->with('error', 'Username tidak ditemukan');
+        }
+
+        // Cek apakah status = 1
+        if ($juri->status == 0) {
+            return back()->with('error', 'Akun Anda tidak aktif');
+        }
+
+        // Lanjutkan proses login jika status aktif
         if (Auth::guard('juri')->attempt($credentials)) {
-            // Login sukses
+            $request->session()->regenerate();
             return redirect()->route('juri_penilaian');
         }
-    
-        // Gagal login
-        return back()->with('error', 'Username atau password salah');
+
+        return back()->with('error', 'Password salah');
     }
 
     

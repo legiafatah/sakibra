@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login Admin</title>
+    <title>Login Superadmin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
     <style>
         body {
             margin: 0;
@@ -38,6 +42,19 @@
             border-radius: 4px;
         }
 
+        .login-box .password-wrapper {
+            position: relative;
+        }
+
+        .login-box .toggle-icon {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #ccc;
+        }
+
         .login-box button {
             width: 100%;
             background: #ffffff;
@@ -69,9 +86,47 @@
         <form method="POST" action="{{ url('/admin/login') }}">
             @csrf
             <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+
+            <div class="password-wrapper">
+                <input type="password" name="password" placeholder="Password" required id="password">
+                <span class="toggle-icon" id="togglePassword">
+                    <i data-feather="eye" id="iconPassword"></i>
+                </span>
+            </div>
+
             <button type="submit">Login</button>
         </form>
     </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        feather.replace(); // Render semua ikon pertama kali
+
+        const toggle = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        toggle.addEventListener('click', function () {
+            const iconContainer = toggle; // tombol <span> atau <button>
+            const isPassword = passwordInput.type === 'password';
+
+            // Ubah tipe input
+            passwordInput.type = isPassword ? 'text' : 'password';
+
+            // Hapus isi ikon lama
+            iconContainer.innerHTML = '';
+
+            // Tambahkan ikon baru sesuai status
+            const newIcon = document.createElement('i');
+            newIcon.setAttribute('data-feather', isPassword ? 'eye-off' : 'eye');
+            newIcon.id = 'iconPassword';
+            iconContainer.appendChild(newIcon);
+
+            // Render ulang Feather Icon
+            feather.replace();
+        });
+    });
+</script>
+
+
 </body>
 </html>
